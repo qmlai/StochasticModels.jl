@@ -50,9 +50,8 @@ solution = solve(EnsembleProblem(affine); alg=SRA1(), trajectories=1000)
 
 ```
 
+![408831746-e879115f-4295-4f83-b37f-f858906b0671](https://github.com/user-attachments/assets/63bccdff-5b28-4354-a911-3ffa73e29904)
 
-
-![download](https://github.com/user-attachments/assets/e879115f-4295-4f83-b37f-f858906b0671)
 
 - Price and distribution of Call on Call option under Geometric and Arithmetic Brownian Motion models:
 
@@ -96,7 +95,7 @@ histogram(arrgbm, xlabel="Value", ylabel="Number of occurences", label="GBM")
 histogram!(arrabm, label="ABM")
 ```
 
-![image](https://github.com/user-attachments/assets/19c3f3e4-8bff-450a-8708-863da7b207c4)
+<img width="600" height="400" alt="409305247-19c3f3e4-8bff-450a-8708-863da7b207c4" src="https://github.com/user-attachments/assets/b0ca1590-fb91-4187-b14b-0a543e3f0cd7" />
 
 **How to install:** ```] add  https://github.com/qmlai/StochasticModels.jl```
 
