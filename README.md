@@ -97,5 +97,46 @@ histogram!(arrabm, label="ABM")
 
 <img width="600" height="400" alt="409305247-19c3f3e4-8bff-450a-8708-863da7b207c4" src="https://github.com/user-attachments/assets/b0ca1590-fb91-4187-b14b-0a543e3f0cd7" />
 
+- Use Automatic Differentiation to compute sensitivities of the SDE and Payoff params:
+
+
+```julia
+using StochasticModels, Statistics, ForwardDiff
+
+u0    = 2.0
+tspan = (0.0, 1.0)
+paths = 10_000
+
+function call_on_call(S, op)
+    T  = op.T
+    K1 = op.K1
+    K0 = op.K0
+    return max(max(S(T) - K1) - K0, 0.0)
+end
+
+function price(θ::AbstractVector)
+    μ, σ, K0, K1, T = θ
+    p  = (μ=μ, σ=σ)
+    op = (K0=K0, K1=K1, T=T)
+
+    model = GeometricBrownianMotionModel(u0, p; tspan)
+    ens = EnsembleProblem(model, output_func = (sol, i) -> (call_on_call(sol, op), false))
+    sol = solve(ens; alg=SRA1(), trajectories=paths)
+    return mean(sol)
+end
+
+θ0 = [0.03, 0.2, 0.9, 0.8, 1.0]
+
+price_val = price(θ0)
+grad = ForwardDiff.gradient(price, θ0)
+
+println("Option price = $price_val")
+println("dPrice/dμ  = ", grad[1])
+println("dPrice/dσ  = ", grad[2])
+println("dPrice/dK0 = ", grad[3])
+println("dPrice/dK1 = ", grad[4])
+println("dPrice/dT  = ", grad[5])
+```
+
 **How to install:** ```] add  https://github.com/qmlai/StochasticModels.jl```
 
