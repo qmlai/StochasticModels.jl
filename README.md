@@ -114,7 +114,7 @@ function call_on_call(S, op)
     return max(max(S(T) - K1) - K0, 0.0)
 end
 
-function price(θ::AbstractVector)
+function price(θ)
     μ, σ, K0, K1, T = θ
     p  = (μ=μ, σ=σ)
     op = (K0=K0, K1=K1, T=T)
