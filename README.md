@@ -103,10 +103,6 @@ histogram!(arrabm, label="ABM")
 ```julia
 using StochasticModels, Statistics, ForwardDiff
 
-u0    = 2.0
-tspan = (0.0, 1.0)
-paths = 10_000
-
 function call_on_call(S, op)
     T  = op.T
     K1 = op.K1
@@ -114,8 +110,8 @@ function call_on_call(S, op)
     return max(max(S(T) - K1) - K0, 0.0)
 end
 
-function price(θ)
-    μ, σ, K0, K1, T = θ
+function price(θ, paths, tspan)
+    u0, μ, σ, K0, K1, T = θ
     p  = (μ=μ, σ=σ)
     op = (K0=K0, K1=K1, T=T)
 
@@ -125,17 +121,21 @@ function price(θ)
     return mean(sol)
 end
 
-θ0 = [0.03, 0.2, 0.9, 0.8, 1.0]
+tspan = (0.0, 1.0)
+paths = 100000
 
-price_val = price(θ0)
-grad = ForwardDiff.gradient(price, θ0)
+θ0 = [2.0, 0.03, 0.2, 0.9, 0.8, 1.0]
+
+price_val = price(θ0, paths, tspan)
+grad = ForwardDiff.gradient(x->price(x, paths, tspan), θ0)
 
 println("Option price = $price_val")
-println("dPrice/dμ  = ", grad[1])
-println("dPrice/dσ  = ", grad[2])
-println("dPrice/dK0 = ", grad[3])
-println("dPrice/dK1 = ", grad[4])
-println("dPrice/dT  = ", grad[5])
+println("dPrice/du0 = ", grad[1])
+println("dPrice/dμ  = ", grad[2])
+println("dPrice/dσ  = ", grad[3])
+println("dPrice/dK0 = ", grad[4])
+println("dPrice/dK1 = ", grad[5])
+println("dPrice/dT  = ", grad[6])
 ```
 
 **How to install:** ```] add  https://github.com/qmlai/StochasticModels.jl```
